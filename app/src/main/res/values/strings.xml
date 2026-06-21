@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Treni Tracker</string>
+    <string name="hint_numero_treno">Numero treno (es. 2345)</string>
+    <string name="btn_cerca">Cerca</string>
+    <string name="hint_inserisci_numero">Inserisci il numero del treno di oggi. Se è ambiguo, ti faccio scegliere la corsa giusta.</string>
+    <string name="nessun_treno_monitorato">Nessun treno monitorato.\nAggiungine uno qui sopra.</string>
+</resources>
