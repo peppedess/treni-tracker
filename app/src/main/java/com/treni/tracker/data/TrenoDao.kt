@@ -27,6 +27,9 @@ interface TrenoDao {
     @Query("UPDATE treni_monitorati SET ultimoRitardo = :ritardo, ultimaStazioneNotificata = :stazione WHERE id = :id")
     suspend fun aggiornaStato(id: Long, ritardo: Int, stazione: String?)
 
+    @Query("SELECT COUNT(*) FROM treni_monitorati WHERE numeroTreno = :numero AND dataCorsa = :data AND attivo = 1")
+    suspend fun contaTrenoMonitoratoOggi(numero: String, data: String): Int
+
     // --- Treni preferiti ---
 
     @Insert

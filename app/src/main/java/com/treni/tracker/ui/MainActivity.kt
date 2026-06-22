@@ -174,6 +174,21 @@ class MainActivity : AppCompatActivity() {
                     val stato = result.data
                     val dataCorsa = SimpleDateFormat("yyyy-MM-dd", Locale.ITALY).format(java.util.Date(candidato.timestampMs))
 
+                    val dao = AppDatabase.getInstance(this@MainActivity).trenoDao()
+                    val giaPresente = withContext(Dispatchers.IO) {
+                        dao.contaTrenoMonitoratoOggi(candidato.numero, dataCorsa) > 0
+                    }
+
+                    if (giaPresente) {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Il treno ${candidato.numero} è già nella lista monitorati",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        binding.inputNumeroTreno.text?.clear()
+                        return@launch
+                    }
+
                     val treno = TrenoMonitorato(
                         numeroTreno = candidato.numero,
                         stazionePartenzaCod = candidato.stazionePartenzaCod,
@@ -184,7 +199,7 @@ class MainActivity : AppCompatActivity() {
                     )
 
                     withContext(Dispatchers.IO) {
-                        AppDatabase.getInstance(this@MainActivity).trenoDao().inserisci(treno)
+                        dao.inserisci(treno)
                     }
 
                     // Controllo immediato, senza aspettare il primo ciclo periodico (fino a 15 min)

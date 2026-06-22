@@ -36,9 +36,25 @@ class TrenoWidgetProvider : AppWidgetProvider() {
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
         if (intent.action == ACTION_REFRESH) {
+            // Feedback immediato: mostra "Aggiornamento…" subito, prima che il worker finisca
+            mostraFeedbackAggiornamento(context)
+
             // Lancia subito un controllo dei treni monitorati, poi aggiorna il widget
             val richiesta = androidx.work.OneTimeWorkRequestBuilder<com.treni.tracker.worker.TrainCheckWorker>().build()
             androidx.work.WorkManager.getInstance(context).enqueue(richiesta)
+        }
+    }
+
+    private fun mostraFeedbackAggiornamento(context: Context) {
+        val manager = AppWidgetManager.getInstance(context)
+        val ids = manager.getAppWidgetIds(ComponentName(context, TrenoWidgetProvider::class.java))
+        for (id in ids) {
+            val views = RemoteViews(context.packageName, R.layout.widget_treno)
+            // Aggiorniamo solo il testo di stato per dare un feedback immediato;
+            // il resto dei dati verrà sovrascritto subito dopo da aggiornaWidget
+            manager.partiallyUpdateAppWidget(id, views.apply {
+                setTextViewText(R.id.widgetStato, "Aggiornamento…")
+            })
         }
     }
 
