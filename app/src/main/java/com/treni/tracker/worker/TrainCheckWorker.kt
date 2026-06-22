@@ -29,6 +29,9 @@ class TrainCheckWorker(
             controllaTreno(treno)
         }
 
+        // Aggiorna il widget home screen con i dati appena raccolti
+        com.treni.tracker.widget.TrenoWidgetProvider.aggiornaTutti(applicationContext)
+
         Result.success()
     }
 
