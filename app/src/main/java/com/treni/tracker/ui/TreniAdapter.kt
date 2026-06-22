@@ -10,7 +10,8 @@ import com.treni.tracker.data.TrenoMonitorato
 
 class TreniAdapter(
     private var treni: List<TrenoMonitorato>,
-    private val onRimuovi: (TrenoMonitorato) -> Unit
+    private val onRimuovi: (TrenoMonitorato) -> Unit,
+    private val onApriDettaglio: (TrenoMonitorato) -> Unit
 ) : RecyclerView.Adapter<TreniAdapter.TrenoViewHolder>() {
 
     fun aggiorna(nuoviTreni: List<TrenoMonitorato>) {
@@ -74,6 +75,7 @@ class TreniAdapter(
                 ?: "In attesa del primo aggiornamento…"
 
             btnRimuovi.setOnClickListener { onRimuovi(treno) }
+            itemView.setOnClickListener { onApriDettaglio(treno) }
         }
 
         private fun getColorAttr(context: android.content.Context, attr: Int): Int {

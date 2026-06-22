@@ -53,7 +53,11 @@ class MainActivity : AppCompatActivity() {
         chiediPermessoNotifiche()
         pianificaControlloPeriodico()
 
-        adapter = TreniAdapter(emptyList()) { treno -> rimuoviTreno(treno) }
+        adapter = TreniAdapter(
+            emptyList(),
+            onRimuovi = { treno -> rimuoviTreno(treno) },
+            onApriDettaglio = { treno -> apriDettaglio(treno) }
+        )
         binding.recyclerTreni.layoutManager = LinearLayoutManager(this)
         binding.recyclerTreni.adapter = adapter
 
@@ -198,5 +202,17 @@ class MainActivity : AppCompatActivity() {
                 AppDatabase.getInstance(this@MainActivity).trenoDao().rimuovi(treno.id)
             }
         }
+    }
+
+    private fun apriDettaglio(treno: TrenoMonitorato) {
+        val intent = android.content.Intent(this, TrenoDetailActivity::class.java).apply {
+            putExtra(TrenoDetailActivity.EXTRA_TRENO_ID, treno.id)
+            putExtra(TrenoDetailActivity.EXTRA_NUMERO_TRENO, treno.numeroTreno)
+            putExtra(TrenoDetailActivity.EXTRA_STAZIONE_PARTENZA_COD, treno.stazionePartenzaCod)
+            putExtra(TrenoDetailActivity.EXTRA_STAZIONE_PARTENZA_NOME, treno.stazionePartenzaNome)
+            putExtra(TrenoDetailActivity.EXTRA_STAZIONE_DESTINAZIONE_NOME, treno.stazioneDestinazioneNome)
+            putExtra(TrenoDetailActivity.EXTRA_TIMESTAMP_MS, treno.timestampMs)
+        }
+        startActivity(intent)
     }
 }

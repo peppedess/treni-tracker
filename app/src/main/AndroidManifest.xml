@@ -28,6 +28,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.TrenoDetailActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.MainActivity" />
+
     </application>
 
 </manifest>
