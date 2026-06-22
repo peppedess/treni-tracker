@@ -5,6 +5,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.treni.tracker.R
+import com.treni.tracker.data.AppDatabase
+import com.treni.tracker.data.TrenoPreferito
 import com.treni.tracker.databinding.ActivityTrenoDetailBinding
 import com.treni.tracker.network.TrainResult
 import com.treni.tracker.network.ViaggiaTrenoClient
@@ -43,6 +46,9 @@ class TrenoDetailActivity : AppCompatActivity() {
 
         binding.textTratta.text = "$stazionePartenzaNome → ${stazioneDestinazioneNome ?: "?"}"
 
+        configuraPreferito(numeroTreno, stazionePartenzaCod, stazionePartenzaNome, stazioneDestinazioneNome)
+        caricaStatistiche(numeroTreno)
+
         fermateAdapter = FermateAdapter(emptyList())
         binding.recyclerFermate.layoutManager = LinearLayoutManager(this)
         binding.recyclerFermate.adapter = fermateAdapter
@@ -52,6 +58,82 @@ class TrenoDetailActivity : AppCompatActivity() {
         }
 
         caricaDettagli(stazionePartenzaCod, numeroTreno, timestampMs)
+    }
+
+    private fun configuraPreferito(
+        numeroTreno: String,
+        stazionePartenzaCod: String,
+        stazionePartenzaNome: String,
+        stazioneDestinazioneNome: String?
+    ) {
+        val dao = AppDatabase.getInstance(this).trenoDao()
+
+        lifecycleScope.launch {
+            var giaPreferito = withContext(Dispatchers.IO) {
+                dao.contaPreferito(numeroTreno, stazionePartenzaCod) > 0
+            }
+            aggiornaIconaPreferito(giaPreferito)
+
+            binding.btnPreferito.setOnClickListener {
+                lifecycleScope.launch {
+                    if (giaPreferito) {
+                        rimuoviDaiPreferiti(numeroTreno, stazionePartenzaCod)
+                        giaPreferito = false
+                        aggiornaIconaPreferito(false)
+                        Toast.makeText(this@TrenoDetailActivity, "Rimosso dai preferiti", Toast.LENGTH_SHORT).show()
+                    } else {
+                        withContext(Dispatchers.IO) {
+                            dao.inserisciPreferito(
+                                TrenoPreferito(
+                                    numeroTreno = numeroTreno,
+                                    stazionePartenzaCod = stazionePartenzaCod,
+                                    stazionePartenzaNome = stazionePartenzaNome,
+                                    stazioneDestinazioneNome = stazioneDestinazioneNome
+                                )
+                            )
+                        }
+                        giaPreferito = true
+                        aggiornaIconaPreferito(true)
+                        Toast.makeText(this@TrenoDetailActivity, "Aggiunto ai preferiti", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun rimuoviDaiPreferiti(numeroTreno: String, stazionePartenzaCod: String) {
+        val dao = AppDatabase.getInstance(this).trenoDao()
+        withContext(Dispatchers.IO) {
+            dao.rimuoviPreferitoPerChiave(numeroTreno, stazionePartenzaCod)
+        }
+    }
+
+    private fun aggiornaIconaPreferito(attivo: Boolean) {
+        binding.btnPreferito.setImageResource(
+            if (attivo) R.drawable.ic_star_filled else R.drawable.ic_star_outline
+        )
+    }
+
+    private fun caricaStatistiche(numeroTreno: String) {
+        val dao = AppDatabase.getInstance(this).trenoDao()
+        lifecycleScope.launch {
+            val ritardi = withContext(Dispatchers.IO) { dao.getRitardiPerCorsa(numeroTreno) }
+            if (ritardi.isEmpty()) {
+                binding.cardStatistiche.visibility = android.view.View.GONE
+                return@launch
+            }
+
+            val numCorse = ritardi.size
+            val ritardoMedio = ritardi.map { it.ritardoMax }.average()
+            val corseInRitardo = ritardi.count { it.ritardoMax >= 5 }
+            val percentualeRitardo = (corseInRitardo * 100) / numCorse
+
+            binding.cardStatistiche.visibility = android.view.View.VISIBLE
+            binding.textStatistiche.text =
+                "Su $numCorse corse monitorate:\n" +
+                "• Ritardo medio: ${"%.1f".format(ritardoMedio)} min\n" +
+                "• In ritardo (≥5 min): $percentualeRitardo% delle volte"
+        }
     }
 
     private fun caricaDettagli(stazionePartenzaCod: String, numeroTreno: String, timestampMs: Long) {

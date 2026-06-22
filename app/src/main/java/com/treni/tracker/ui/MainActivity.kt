@@ -67,6 +67,10 @@ class MainActivity : AppCompatActivity() {
             binding.emptyState.visibility = if (treni.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
         }
 
+        dao.osservaPreferiti().observe(this) { preferiti ->
+            mostraPreferiti(preferiti)
+        }
+
         binding.btnCerca.setOnClickListener { cercaTreno() }
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -188,6 +192,66 @@ class MainActivity : AppCompatActivity() {
                 }
                 is TrainResult.NoData -> {
                     Toast.makeText(this@MainActivity, result.message, Toast.LENGTH_LONG).show()
+                }
+                else -> {
+                    Toast.makeText(this@MainActivity, "Errore di rete. Riprova.", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun mostraPreferiti(preferiti: List<com.treni.tracker.data.TrenoPreferito>) {
+        binding.chipGroupPreferiti.removeAllViews()
+        binding.labelPreferiti.visibility = if (preferiti.isEmpty()) android.view.View.GONE else android.view.View.VISIBLE
+
+        for (pref in preferiti) {
+            val chip = com.google.android.material.chip.Chip(this).apply {
+                text = "${pref.numeroTreno} · ${pref.stazionePartenzaNome}"
+                isCheckable = false
+                isClickable = true
+                setChipIconResource(R.drawable.ic_star_filled)
+                isChipIconVisible = true
+                setOnClickListener { riaggiungiDaPreferito(pref) }
+                setOnLongClickListener {
+                    confermaRimozionePreferito(pref)
+                    true
+                }
+            }
+            binding.chipGroupPreferiti.addView(chip)
+        }
+    }
+
+    private fun confermaRimozionePreferito(pref: com.treni.tracker.data.TrenoPreferito) {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Rimuovere preferito?")
+            .setMessage("Vuoi rimuovere il treno ${pref.numeroTreno} dai preferiti?")
+            .setPositiveButton("Rimuovi") { _, _ ->
+                lifecycleScope.launch {
+                    withContext(Dispatchers.IO) {
+                        AppDatabase.getInstance(this@MainActivity).trenoDao().rimuoviPreferito(pref.id)
+                    }
+                }
+            }
+            .setNegativeButton("Annulla", null)
+            .show()
+    }
+
+    private fun riaggiungiDaPreferito(pref: com.treni.tracker.data.TrenoPreferito) {
+        // Ricerca la corsa di oggi per quel numero treno, poi la aggiunge come monitorata
+        binding.progressBar.visibility = android.view.View.VISIBLE
+        lifecycleScope.launch {
+            val result = withContext(Dispatchers.IO) { client.cercaNumeroTreno(pref.numeroTreno) }
+            binding.progressBar.visibility = android.view.View.GONE
+
+            when (result) {
+                is TrainResult.Success -> {
+                    // Preferisce la corsa che parte dalla stessa stazione del preferito
+                    val candidato = result.data.firstOrNull { it.stazionePartenzaCod == pref.stazionePartenzaCod }
+                        ?: result.data.first()
+                    confermaTreno(candidato)
+                }
+                is TrainResult.NotFound -> {
+                    Toast.makeText(this@MainActivity, "Nessuna corsa oggi per il treno ${pref.numeroTreno}", Toast.LENGTH_LONG).show()
                 }
                 else -> {
                     Toast.makeText(this@MainActivity, "Errore di rete. Riprova.", Toast.LENGTH_LONG).show()

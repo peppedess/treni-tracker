@@ -5,4 +5,7 @@
     <string name="btn_cerca">Cerca</string>
     <string name="hint_inserisci_numero">Inserisci il numero del treno di oggi. Se è ambiguo, ti faccio scegliere la corsa giusta.</string>
     <string name="nessun_treno_monitorato">Nessun treno monitorato.\nAggiungine uno qui sopra.</string>
+    <string name="aggiungi_preferito">Aggiungi ai preferiti</string>
+    <string name="statistiche_titolo">STORICO RITARDI</string>
+    <string name="preferiti_titolo">I tuoi treni preferiti</string>
 </resources>

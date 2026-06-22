@@ -62,6 +62,15 @@ class TrainCheckWorker(
                 val ritardoPrecedente = treno.ultimoRitardo
                 val stazionePrecedente = treno.ultimaStazioneNotificata
 
+                // Registra il rilevamento nello storico (per le statistiche)
+                dao.inserisciRilevamento(
+                    com.treni.tracker.data.RilevamentoStorico(
+                        numeroTreno = treno.numeroTreno,
+                        ritardoMinuti = ritardoAttuale,
+                        dataCorsa = treno.dataCorsa
+                    )
+                )
+
                 val cambioStazione = ultimaStazioneRilevata != null && ultimaStazioneRilevata != stazionePrecedente
                 val variazioneSignificativa = ritardoPrecedente == null ||
                     kotlin.math.abs(ritardoAttuale - ritardoPrecedente) >= SOGLIA_VARIAZIONE_RITARDO
