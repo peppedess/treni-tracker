@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Scala tipografica Material 3 Expressive, applicata coerentemente in tutta l'app.
+         Nessun'altra schermata deve definire textSize/textStyle "a mano": riusa questi stili. -->
+
+    <style name="TT.Display" parent="TextAppearance.Material3.DisplaySmall">
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">-0.01</item>
+    </style>
+
+    <style name="TT.Headline" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TT.Title" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TT.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TT.Body" parent="TextAppearance.Material3.BodyMedium" />
+
+    <style name="TT.BodyLarge" parent="TextAppearance.Material3.BodyLarge" />
+
+    <style name="TT.Label" parent="TextAppearance.Material3.LabelMedium" />
+
+    <style name="TT.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+</resources>

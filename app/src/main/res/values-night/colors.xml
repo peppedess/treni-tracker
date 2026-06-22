@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sfondo generale scuro -->
+    <color name="md_surface">#1B1C2B</color>
+    <color name="md_on_surface">#E4E1F5</color>
+    <color name="md_surface_variant">#2A2C42</color>
+    <color name="md_on_surface_variant">#C4C5E0</color>
+
+    <color name="md_primary">#B4C0F5</color>
+    <color name="md_on_primary">#1B2466</color>
+    <color name="md_primary_container">#3A4490</color>
+    <color name="md_on_primary_container">#D9DFFC</color>
+
+    <color name="md_secondary">#CDBCF2</color>
+    <color name="md_on_secondary">#2E1A66</color>
+    <color name="md_secondary_container">#4A3A8C</color>
+    <color name="md_on_secondary_container">#E5DAFA</color>
+
+    <color name="md_tertiary">#F2A8C2</color>
+    <color name="md_error">#FFB4AB</color>
+
+    <!-- Card piene pastello per stato treno, versione scura (più sature, meno chiare) -->
+    <color name="card_late_bg">#5C2A22</color>
+    <color name="card_late_on">#FFD9D2</color>
+
+    <color name="card_ontime_bg">#1F4A30</color>
+    <color name="card_ontime_on">#C8F2D8</color>
+
+    <color name="card_early_bg">#28336B</color>
+    <color name="card_early_on">#D7E3FC</color>
+
+    <color name="card_pending_bg">#3A3552</color>
+    <color name="card_pending_on">#E0DCF2</color>
+
+    <!-- Stati semantici puntuali (chip, dot timeline) -->
+    <color name="status_ontime">#5FCB87</color>
+    <color name="status_late">#FF8A80</color>
+    <color name="status_early">#8FA8F2</color>
+    <color name="status_pending_grey">#9991B8</color>
+</resources>

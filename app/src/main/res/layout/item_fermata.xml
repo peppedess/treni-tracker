@@ -40,15 +40,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="15sp"
+            style="@style/TT.BodyLarge"
             android:textColor="?attr/colorOnSurface" />
 
         <TextView
             android:id="@+id/textRitardoFermata"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="13sp"
-            android:textStyle="bold"
+            style="@style/TT.LabelLarge"
             android:textColor="?attr/colorOnSurfaceVariant" />
 
     </LinearLayout>

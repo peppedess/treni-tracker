@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spaziature standard (griglia 4dp Material 3) -->
+    <dimen name="space_xs">4dp</dimen>
+    <dimen name="space_sm">8dp</dimen>
+    <dimen name="space_md">16dp</dimen>
+    <dimen name="space_lg">20dp</dimen>
+    <dimen name="space_xl">24dp</dimen>
+    <dimen name="space_xxl">32dp</dimen>
+
+    <!-- Raggi standard per card e bottoni -->
+    <dimen name="radius_sm">16dp</dimen>
+    <dimen name="radius_md">24dp</dimen>
+    <dimen name="radius_lg">28dp</dimen>
+</resources>

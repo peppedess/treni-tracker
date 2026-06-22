@@ -74,10 +74,6 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnCerca.setOnClickListener { cercaTreno() }
 
-        binding.btnCercaTratta.setOnClickListener {
-            startActivity(android.content.Intent(this, RicercaTrattaActivity::class.java))
-        }
-
         binding.btnTema.setOnClickListener { mostraSceltaTema() }
 
         binding.navTratta.setOnClickListener {

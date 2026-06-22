@@ -84,13 +84,24 @@ class TrenoDetailActivity : AppCompatActivity() {
             aggiornaIconaPreferito(giaPreferito)
 
             binding.btnPreferito.setOnClickListener {
+                binding.btnPreferito.isEnabled = false
                 lifecycleScope.launch {
                     if (giaPreferito) {
                         rimuoviDaiPreferiti(numeroTreno, stazionePartenzaCod)
                         giaPreferito = false
                         aggiornaIconaPreferito(false)
                         Toast.makeText(this@TrenoDetailActivity, "Rimosso dai preferiti", Toast.LENGTH_SHORT).show()
+                        binding.btnPreferito.isEnabled = true
                     } else {
+                        val esisteGia = withContext(Dispatchers.IO) {
+                            dao.contaPreferito(numeroTreno, stazionePartenzaCod) > 0
+                        }
+                        if (esisteGia) {
+                            giaPreferito = true
+                            aggiornaIconaPreferito(true)
+                            binding.btnPreferito.isEnabled = true
+                            return@launch
+                        }
                         withContext(Dispatchers.IO) {
                             dao.inserisciPreferito(
                                 TrenoPreferito(
@@ -104,6 +115,7 @@ class TrenoDetailActivity : AppCompatActivity() {
                         giaPreferito = true
                         aggiornaIconaPreferito(true)
                         Toast.makeText(this@TrenoDetailActivity, "Aggiunto ai preferiti", Toast.LENGTH_SHORT).show()
+                        binding.btnPreferito.isEnabled = true
                     }
                 }
             }

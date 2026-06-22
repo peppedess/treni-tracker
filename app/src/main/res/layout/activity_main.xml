@@ -26,9 +26,7 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="@string/app_name"
-                android:textSize="38sp"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-black"
+                style="@style/TT.Display"
                 android:textColor="?attr/colorOnSurface" />
 
             <ImageButton
@@ -65,17 +63,17 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="24dp"
+                    android:layout_marginTop="@dimen/space_xs"
+                    android:layout_marginBottom="@dimen/space_xl"
                     app:cardElevation="0dp"
                     app:cardBackgroundColor="?attr/colorPrimaryContainer"
-                    app:cardCornerRadius="32dp">
+                    app:cardCornerRadius="@dimen/radius_lg">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="22dp">
+                        android:padding="@dimen/space_lg">
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/inputLayoutNumeroTreno"
@@ -84,10 +82,10 @@
                             android:layout_height="wrap_content"
                             app:boxStrokeWidth="0dp"
                             app:boxBackgroundColor="?attr/colorSurface"
-                            app:boxCornerRadiusTopStart="20dp"
-                            app:boxCornerRadiusTopEnd="20dp"
-                            app:boxCornerRadiusBottomStart="20dp"
-                            app:boxCornerRadiusBottomEnd="20dp"
+                            app:boxCornerRadiusTopStart="@dimen/radius_md"
+                            app:boxCornerRadiusTopEnd="@dimen/radius_md"
+                            app:boxCornerRadiusBottomStart="@dimen/radius_md"
+                            app:boxCornerRadiusBottomEnd="@dimen/radius_md"
                             android:hint="@string/hint_numero_treno">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -95,7 +93,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="number"
-                                android:textSize="18sp" />
+                                style="@style/TT.BodyLarge" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -104,29 +102,18 @@
                             style="@style/Widget.Material3.Button"
                             android:layout_width="match_parent"
                             android:layout_height="56dp"
-                            android:layout_marginTop="12dp"
+                            android:layout_marginTop="@dimen/space_md"
                             android:text="@string/btn_cerca"
-                            app:cornerRadius="28dp"
+                            app:cornerRadius="@dimen/radius_lg"
                             app:icon="@drawable/ic_search"
-                            app:iconGravity="textStart" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnCercaTratta"
-                            style="@style/Widget.Material3.Button.TonalButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="56dp"
-                            android:layout_marginTop="8dp"
-                            android:text="@string/cerca_per_tratta_btn"
-                            app:cornerRadius="28dp"
-                            app:icon="@drawable/ic_train"
                             app:iconGravity="textStart" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
+                            android:layout_marginTop="@dimen/space_md"
                             android:text="@string/hint_inserisci_numero"
-                            android:textSize="13sp"
+                            style="@style/TT.Label"
                             android:textColor="?attr/colorOnPrimaryContainer" />
 
                         <ProgressBar
@@ -134,7 +121,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_marginTop="12dp"
+                            android:layout_marginTop="@dimen/space_md"
                             android:visibility="gone" />
 
                     </LinearLayout>
@@ -146,10 +133,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/preferiti_titolo"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
+                    style="@style/TT.LabelLarge"
                     android:textColor="?attr/colorOnSurfaceVariant"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginBottom="@dimen/space_sm"
                     android:visibility="gone" />
 
                 <com.google.android.material.chip.ChipGroup
@@ -179,10 +165,10 @@
                         android:id="@+id/textVuoto"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="@dimen/space_md"
                         android:text="@string/nessun_treno_monitorato"
                         android:textColor="?attr/colorOnSurfaceVariant"
-                        android:textSize="15sp"
+                        style="@style/TT.BodyLarge"
                         android:gravity="center" />
 
                 </LinearLayout>
@@ -235,10 +221,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="@dimen/space_sm"
                     android:text="@string/nav_home"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
+                    style="@style/TT.LabelLarge"
                     android:textColor="?attr/colorOnPrimaryContainer" />
 
             </LinearLayout>
@@ -254,7 +239,7 @@
                 <ImageView
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    android:src="@drawable/ic_search"
+                    android:src="@drawable/ic_train"
                     app:tint="?attr/colorOnSurfaceVariant" />
 
             </LinearLayout>

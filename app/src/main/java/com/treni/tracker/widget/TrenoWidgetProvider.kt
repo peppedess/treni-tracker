@@ -16,6 +16,32 @@ import kotlinx.coroutines.launch
 
 class TrenoWidgetProvider : AppWidgetProvider() {
 
+    companion object {
+        const val ACTION_REFRESH = "com.treni.tracker.widget.ACTION_REFRESH"
+
+        /** Richiama l'aggiornamento di tutti i widget istanziati (chiamato dal worker). */
+        fun aggiornaTutti(context: Context) {
+            val manager = AppWidgetManager.getInstance(context)
+            val ids = manager.getAppWidgetIds(ComponentName(context, TrenoWidgetProvider::class.java))
+            if (ids.isNotEmpty()) {
+                val intent = Intent(context, TrenoWidgetProvider::class.java).apply {
+                    action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+                }
+                context.sendBroadcast(intent)
+            }
+        }
+    }
+
+    override fun onReceive(context: Context, intent: Intent) {
+        super.onReceive(context, intent)
+        if (intent.action == ACTION_REFRESH) {
+            // Lancia subito un controllo dei treni monitorati, poi aggiorna il widget
+            val richiesta = androidx.work.OneTimeWorkRequestBuilder<com.treni.tracker.worker.TrainCheckWorker>().build()
+            androidx.work.WorkManager.getInstance(context).enqueue(richiesta)
+        }
+    }
+
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         for (appWidgetId in appWidgetIds) {
             aggiornaWidget(context, appWidgetManager, appWidgetId)
@@ -58,22 +84,17 @@ class TrenoWidgetProvider : AppWidgetProvider() {
             )
             views.setOnClickPendingIntent(R.id.widgetRoot, pendingIntent)
 
-            appWidgetManager.updateAppWidget(appWidgetId, views)
-        }
-    }
-
-    companion object {
-        /** Richiama l'aggiornamento di tutti i widget istanziati (chiamato dal worker). */
-        fun aggiornaTutti(context: Context) {
-            val manager = AppWidgetManager.getInstance(context)
-            val ids = manager.getAppWidgetIds(ComponentName(context, TrenoWidgetProvider::class.java))
-            if (ids.isNotEmpty()) {
-                val intent = Intent(context, TrenoWidgetProvider::class.java).apply {
-                    action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-                }
-                context.sendBroadcast(intent)
+            // Tap sull'icona refresh: controllo immediato senza aprire l'app
+            val refreshIntent = Intent(context, TrenoWidgetProvider::class.java).apply {
+                action = ACTION_REFRESH
             }
+            val refreshPendingIntent = PendingIntent.getBroadcast(
+                context, appWidgetId, refreshIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            views.setOnClickPendingIntent(R.id.widgetRefresh, refreshPendingIntent)
+
+            appWidgetManager.updateAppWidget(appWidgetId, views)
         }
     }
 }

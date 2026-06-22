@@ -4,17 +4,17 @@
     android:id="@+id/cardTreno"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
+    android:layout_marginBottom="@dimen/space_md"
     app:cardElevation="0dp"
     app:strokeWidth="0dp"
     app:cardBackgroundColor="@color/card_pending_bg"
-    app:cardCornerRadius="28dp">
+    app:cardCornerRadius="@dimen/radius_lg">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="@dimen/space_lg">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,24 +27,21 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-black"
+                style="@style/TT.Title"
                 android:textColor="@color/card_pending_on" />
 
             <TextView
                 android:id="@+id/textStatoCompatto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textStyle="bold"
+                style="@style/TT.TitleMedium"
                 android:textColor="@color/card_pending_on" />
 
             <ImageButton
                 android:id="@+id/btnRimuovi"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_marginStart="6dp"
+                android:layout_marginStart="@dimen/space_sm"
                 android:src="@drawable/ic_close"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 app:tint="@color/card_pending_on" />
@@ -55,19 +52,19 @@
             android:id="@+id/textTratta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            style="@style/TT.Body"
             android:textColor="@color/card_pending_on"
-            android:alpha="0.75"
-            android:layout_marginTop="4dp" />
+            android:alpha="0.8"
+            android:layout_marginTop="@dimen/space_xs" />
 
         <TextView
             android:id="@+id/textStato"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="13sp"
+            style="@style/TT.Label"
             android:textColor="@color/card_pending_on"
-            android:alpha="0.75"
-            android:layout_marginTop="10dp" />
+            android:alpha="0.8"
+            android:layout_marginTop="@dimen/space_sm" />
 
     </LinearLayout>
 
