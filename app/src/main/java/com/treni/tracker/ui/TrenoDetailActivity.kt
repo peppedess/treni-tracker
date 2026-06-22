@@ -30,6 +30,10 @@ class TrenoDetailActivity : AppCompatActivity() {
     private lateinit var fermateAdapter: FermateAdapter
     private val client = ViaggiaTrenoClient()
 
+    private var numeroTrenoCorrente: String = ""
+    private var trattaCorrente: String = ""
+    private var statoCorrente: String = "In attesa di aggiornamento"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTrenoDetailBinding.inflate(layoutInflater)
@@ -45,6 +49,11 @@ class TrenoDetailActivity : AppCompatActivity() {
         binding.toolbar.setNavigationOnClickListener { finish() }
 
         binding.textTratta.text = "$stazionePartenzaNome → ${stazioneDestinazioneNome ?: "?"}"
+
+        numeroTrenoCorrente = numeroTreno
+        trattaCorrente = "$stazionePartenzaNome → ${stazioneDestinazioneNome ?: "?"}"
+
+        binding.btnCondividi.setOnClickListener { condividiStato() }
 
         configuraPreferito(numeroTreno, stazionePartenzaCod, stazionePartenzaNome, stazioneDestinazioneNome)
         caricaStatistiche(numeroTreno)
@@ -151,10 +160,15 @@ class TrenoDetailActivity : AppCompatActivity() {
                 is TrainResult.Success -> {
                     val stato = result.data
                     val ritardo = stato.ritardoMinuti
-                    binding.textRitardoGlobale.text = when {
+                    val testoStato = when {
                         ritardo > 0 -> "In ritardo di $ritardo min"
                         ritardo < 0 -> "In anticipo di ${kotlin.math.abs(ritardo)} min"
                         else -> "In orario"
+                    }
+                    binding.textRitardoGlobale.text = testoStato
+                    statoCorrente = testoStato
+                    if (stato.ultimaStazioneRilevata != null) {
+                        statoCorrente += " (ultima fermata: ${stato.ultimaStazioneRilevata})"
                     }
                     fermateAdapter.aggiorna(stato.fermate)
                 }
@@ -166,5 +180,14 @@ class TrenoDetailActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun condividiStato() {
+        val testo = "🚆 Treno $numeroTrenoCorrente\n$trattaCorrente\n$statoCorrente\n\n(via Treni Tracker)"
+        val intent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(android.content.Intent.EXTRA_TEXT, testo)
+        }
+        startActivity(android.content.Intent.createChooser(intent, "Condividi stato treno"))
     }
 }

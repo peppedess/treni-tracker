@@ -44,6 +44,20 @@ data class TrainStatus(
     val fermate: List<StopInfo>
 )
 
+data class StazioneAutocomplete(
+    val nome: String,
+    val codice: String
+)
+
+data class PartenzaTreno(
+    val numeroTreno: String,
+    val codStazionePartenza: String,
+    val nomeStazionePartenza: String,
+    val destinazione: String,
+    val orarioPartenza: String,
+    val timestampMs: Long
+)
+
 sealed class TrainResult<out T> {
     data class Success<T>(val data: T) : TrainResult<T>()
     data class NotFound(val message: String) : TrainResult<Nothing>()
@@ -155,6 +169,99 @@ class ViaggiaTrenoClient {
                     fermate = fermate
                 )
             )
+        } catch (e: Exception) {
+            TrainResult.NetworkError(e.message ?: "Errore di rete")
+        }
+    }
+
+    /**
+     * Cerca il codice di una stazione dal suo nome (parziale).
+     * Endpoint: autocompletaStazione/{nome} → righe tipo "MILANO CENTRALE|S01700"
+     */
+    fun autocompletaStazione(nome: String): TrainResult<List<StazioneAutocomplete>> {
+        val url = "$BASE_URL/autocompletaStazione/${nome.trim()}"
+        return try {
+            val request = Request.Builder().url(url).build()
+            val response = client.newCall(request).execute()
+
+            if (!response.isSuccessful) {
+                return TrainResult.NotFound("Nessuna stazione trovata per \"$nome\"")
+            }
+
+            val body = response.body?.string()?.trim()
+            if (body.isNullOrEmpty()) {
+                return TrainResult.NotFound("Nessuna stazione trovata per \"$nome\"")
+            }
+
+            val stazioni = body.lines().mapNotNull { riga ->
+                val parts = riga.split("|")
+                if (parts.size >= 2) {
+                    StazioneAutocomplete(nome = parts[0].trim(), codice = parts[1].trim())
+                } else null
+            }
+
+            if (stazioni.isEmpty()) {
+                TrainResult.NotFound("Nessuna stazione trovata per \"$nome\"")
+            } else {
+                TrainResult.Success(stazioni)
+            }
+        } catch (e: Exception) {
+            TrainResult.NetworkError(e.message ?: "Errore di rete")
+        }
+    }
+
+    /**
+     * Restituisce i treni in partenza da una stazione a partire da "adesso".
+     * Endpoint: partenze/{codStazione}/{dataora-formato-EEE MMM dd yyyy HH:mm:ss}
+     */
+    fun partenzeDaStazione(codStazione: String, nomeStazione: String): TrainResult<List<PartenzaTreno>> {
+        // Formato data richiesto dall'API: es. "Sun Jun 22 2026 11:30:00 GMT+0200"
+        val sdf = java.text.SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss 'GMT+0200'", java.util.Locale.ENGLISH)
+        val dataOra = sdf.format(java.util.Date())
+        val url = "$BASE_URL/partenze/$codStazione/$dataOra"
+
+        return try {
+            val request = Request.Builder().url(url).build()
+            val response = client.newCall(request).execute()
+
+            if (!response.isSuccessful) {
+                return TrainResult.NoData("Nessuna partenza disponibile per $nomeStazione")
+            }
+
+            val body = response.body?.string()
+            if (body.isNullOrEmpty() || body.trim() == "[]") {
+                return TrainResult.NoData("Nessuna partenza nelle prossime ore da $nomeStazione")
+            }
+
+            val arr = json.parseToJsonElement(body)
+            val partenze = mutableListOf<PartenzaTreno>()
+            if (arr is kotlinx.serialization.json.JsonArray) {
+                for (el in arr) {
+                    val o = el as JsonObject
+                    val numTreno = o["numeroTreno"]?.jsonPrimitive?.contentOrNull ?: continue
+                    val codOrigine = o["codOrigine"]?.jsonPrimitive?.contentOrNull ?: codStazione
+                    val destinazione = o["destinazione"]?.jsonPrimitive?.contentOrNull ?: ""
+                    val compOrarioPartenza = o["compOrarioPartenza"]?.jsonPrimitive?.contentOrNull ?: ""
+                    val oraPartenzaMs = o["orarioPartenza"]?.jsonPrimitive?.contentOrNull?.toLongOrNull() ?: 0L
+
+                    partenze.add(
+                        PartenzaTreno(
+                            numeroTreno = numTreno,
+                            codStazionePartenza = codOrigine,
+                            nomeStazionePartenza = nomeStazione,
+                            destinazione = destinazione,
+                            orarioPartenza = compOrarioPartenza,
+                            timestampMs = oraPartenzaMs
+                        )
+                    )
+                }
+            }
+
+            if (partenze.isEmpty()) {
+                TrainResult.NoData("Nessuna partenza nelle prossime ore da $nomeStazione")
+            } else {
+                TrainResult.Success(partenze)
+            }
         } catch (e: Exception) {
             TrainResult.NetworkError(e.message ?: "Errore di rete")
         }

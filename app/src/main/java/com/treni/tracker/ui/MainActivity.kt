@@ -74,6 +74,12 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnCerca.setOnClickListener { cercaTreno() }
 
+        binding.btnCercaTratta.setOnClickListener {
+            startActivity(android.content.Intent(this, RicercaTrattaActivity::class.java))
+        }
+
+        binding.btnTema.setOnClickListener { mostraSceltaTema() }
+
         binding.swipeRefresh.setOnRefreshListener {
             val richiesta = OneTimeWorkRequestBuilder<TrainCheckWorker>()
                 .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
@@ -199,6 +205,20 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun mostraSceltaTema() {
+        val opzioni = arrayOf("Sistema (automatico)", "Sempre chiaro", "Sempre scuro")
+        val temaAttuale = com.treni.tracker.util.ThemeManager.leggiTema(this)
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Tema dell'app")
+            .setSingleChoiceItems(opzioni, temaAttuale) { dialog, scelta ->
+                com.treni.tracker.util.ThemeManager.salvaTema(this, scelta)
+                dialog.dismiss()
+                recreate()
+            }
+            .setNegativeButton("Annulla", null)
+            .show()
     }
 
     private fun mostraPreferiti(preferiti: List<com.treni.tracker.data.TrenoPreferito>) {

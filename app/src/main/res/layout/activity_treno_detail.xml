@@ -54,6 +54,15 @@
             </LinearLayout>
 
             <ImageButton
+                android:id="@+id/btnCondividi"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_share"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="?attr/colorOnPrimaryContainer"
+                android:contentDescription="@string/condividi" />
+
+            <ImageButton
                 android:id="@+id/btnPreferito"
                 android:layout_width="48dp"
                 android:layout_height="48dp"

@@ -8,4 +8,11 @@
     <string name="aggiungi_preferito">Aggiungi ai preferiti</string>
     <string name="statistiche_titolo">STORICO RITARDI</string>
     <string name="preferiti_titolo">I tuoi treni preferiti</string>
+    <string name="ricerca_per_tratta">Cerca per tratta</string>
+    <string name="hint_partenza">Stazione di partenza</string>
+    <string name="hint_destinazione">Stazione di arrivo</string>
+    <string name="aggiungi_treno">Aggiungi treno</string>
+    <string name="cerca_per_tratta_btn">Cerca per tratta</string>
+    <string name="cambia_tema">Cambia tema</string>
+    <string name="condividi">Condividi</string>
 </resources>
