@@ -18,6 +18,7 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.treni.tracker.R
 import com.treni.tracker.data.AppDatabase
 import com.treni.tracker.data.TrenoMonitorato
 import com.treni.tracker.databinding.ActivityMainBinding
