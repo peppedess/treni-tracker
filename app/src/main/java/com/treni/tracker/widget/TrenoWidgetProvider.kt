@@ -42,13 +42,12 @@ class TrenoWidgetProvider : AppWidgetProvider() {
                 )
                 val ritardo = treno.ultimoRitardo
                 val statoTesto = when {
-                    ritardo == null -> "In attesa di aggiornamento"
-                    ritardo > 0 -> "In ritardo di $ritardo min"
-                    ritardo < 0 -> "In anticipo di ${kotlin.math.abs(ritardo)} min"
+                    ritardo == null -> "In attesa"
+                    ritardo > 0 -> "+$ritardo min"
+                    ritardo < 0 -> "$ritardo min"
                     else -> "In orario"
                 }
-                val dettaglio = treno.ultimaStazioneNotificata?.let { " · $it" } ?: ""
-                views.setTextViewText(R.id.widgetStato, statoTesto + dettaglio)
+                views.setTextViewText(R.id.widgetStato, statoTesto)
             }
 
             // Tap sul widget apre l'app

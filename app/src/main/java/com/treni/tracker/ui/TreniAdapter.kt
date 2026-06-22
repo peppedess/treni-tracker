@@ -3,8 +3,9 @@ package com.treni.tracker.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.chip.Chip
+import com.google.android.material.card.MaterialCardView
 import com.treni.tracker.R
 import com.treni.tracker.data.TrenoMonitorato
 
@@ -31,11 +32,11 @@ class TreniAdapter(
     override fun getItemCount(): Int = treni.size
 
     inner class TrenoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val card: MaterialCardView = itemView.findViewById(R.id.cardTreno)
         private val numero: android.widget.TextView = itemView.findViewById(R.id.textNumeroTreno)
         private val tratta: android.widget.TextView = itemView.findViewById(R.id.textTratta)
         private val stato: android.widget.TextView = itemView.findViewById(R.id.textStato)
-        private val chipStato: Chip = itemView.findViewById(R.id.chipStato)
-        private val statusStripe: View = itemView.findViewById(R.id.statusStripe)
+        private val statoCompatto: android.widget.TextView = itemView.findViewById(R.id.textStatoCompatto)
         private val btnRimuovi: android.widget.ImageButton = itemView.findViewById(R.id.btnRimuovi)
 
         fun bind(treno: TrenoMonitorato) {
@@ -44,44 +45,30 @@ class TreniAdapter(
             tratta.text = "${treno.stazionePartenzaNome} → ${treno.stazioneDestinazioneNome ?: "?"}"
 
             val ritardo = treno.ultimoRitardo
-            val coloreStato: Int
-            val testoChip: String
-
-            when {
-                ritardo == null -> {
-                    testoChip = "In attesa"
-                    coloreStato = getColorAttr(context, com.google.android.material.R.attr.colorOutline)
-                }
-                ritardo > 0 -> {
-                    testoChip = "+$ritardo min"
-                    coloreStato = androidx.core.content.ContextCompat.getColor(context, R.color.status_late)
-                }
-                ritardo < 0 -> {
-                    testoChip = "${ritardo} min"
-                    coloreStato = androidx.core.content.ContextCompat.getColor(context, R.color.status_early)
-                }
-                else -> {
-                    testoChip = "In orario"
-                    coloreStato = androidx.core.content.ContextCompat.getColor(context, R.color.status_ontime)
-                }
+            val (bgColorRes, onColorRes, testoCompatto) = when {
+                ritardo == null -> Triple(R.color.card_pending_bg, R.color.card_pending_on, "In attesa")
+                ritardo > 0 -> Triple(R.color.card_late_bg, R.color.card_late_on, "+$ritardo min")
+                ritardo < 0 -> Triple(R.color.card_early_bg, R.color.card_early_on, "$ritardo min")
+                else -> Triple(R.color.card_ontime_bg, R.color.card_ontime_on, "In orario")
             }
 
-            chipStato.text = testoChip
-            chipStato.chipBackgroundColor = android.content.res.ColorStateList.valueOf(coloreStato)
-            chipStato.setTextColor(androidx.core.content.ContextCompat.getColor(context, android.R.color.white))
-            statusStripe.setBackgroundColor(coloreStato)
+            val bgColor = ContextCompat.getColor(context, bgColorRes)
+            val onColor = ContextCompat.getColor(context, onColorRes)
+
+            card.setCardBackgroundColor(bgColor)
+            numero.setTextColor(onColor)
+            statoCompatto.setTextColor(onColor)
+            tratta.setTextColor(onColor)
+            stato.setTextColor(onColor)
+            btnRimuovi.imageTintList = android.content.res.ColorStateList.valueOf(onColor)
+
+            statoCompatto.text = testoCompatto
 
             stato.text = treno.ultimaStazioneNotificata?.let { "Ultima fermata rilevata: $it" }
                 ?: "In attesa del primo aggiornamento…"
 
             btnRimuovi.setOnClickListener { onRimuovi(treno) }
             itemView.setOnClickListener { onApriDettaglio(treno) }
-        }
-
-        private fun getColorAttr(context: android.content.Context, attr: Int): Int {
-            val typedValue = android.util.TypedValue()
-            context.theme.resolveAttribute(attr, typedValue, true)
-            return typedValue.data
         }
     }
 }

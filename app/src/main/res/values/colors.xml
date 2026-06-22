@@ -1,31 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Seed color per il dynamic color e per il fallback su Android < 12.
-         Blu-verde acceso, in stile app Google moderne (Maps/Photos). -->
-    <color name="seed_color">#1A73E8</color>
+    <!-- Seed color per il dynamic color e per il fallback su Android < 12 -->
+    <color name="seed_color">#7C9CE8</color>
 
-    <!-- Fallback Material 3 scheme statico (usato se dynamic color non disponibile) -->
-    <color name="md_primary">#1A73E8</color>
+    <!-- Sfondo generale pastello (lavanda/azzurro chiaro) -->
+    <color name="md_surface">#EEF1FB</color>
+    <color name="md_on_surface">#2B2D42</color>
+    <color name="md_surface_variant">#E2E7F9</color>
+    <color name="md_on_surface_variant">#5C6080</color>
+
+    <color name="md_primary">#5B6EE8</color>
     <color name="md_on_primary">#FFFFFF</color>
-    <color name="md_primary_container">#D6E3FF</color>
-    <color name="md_on_primary_container">#001A41</color>
+    <color name="md_primary_container">#D9DFFC</color>
+    <color name="md_on_primary_container">#1B2466</color>
 
-    <color name="md_secondary">#00897B</color>
+    <color name="md_secondary">#8B6FE0</color>
     <color name="md_on_secondary">#FFFFFF</color>
-    <color name="md_secondary_container">#B2DFDB</color>
-    <color name="md_on_secondary_container">#00251F</color>
+    <color name="md_secondary_container">#E5DAFA</color>
+    <color name="md_on_secondary_container">#2E1A66</color>
 
-    <color name="md_tertiary">#9C27B0</color>
-    <color name="md_error">#BA1A1A</color>
+    <color name="md_tertiary">#E07A9C</color>
+    <color name="md_error">#D9534F</color>
 
-    <color name="md_surface">#FBFCFF</color>
-    <color name="md_on_surface">#1A1C1E</color>
-    <color name="md_surface_variant">#E0E2EC</color>
-    <color name="md_on_surface_variant">#44474E</color>
+    <!-- Card piene pastello per stato treno (sfondo + testo coordinato) -->
+    <color name="card_late_bg">#FBD8D2</color>
+    <color name="card_late_on">#8C2F1F</color>
 
-    <!-- Stati semantici treno -->
-    <color name="status_ontime">#1E8E3E</color>
-    <color name="status_late">#D93025</color>
-    <color name="status_early">#1A73E8</color>
-    <color name="status_pending_grey">#9AA0A6</color>
+    <color name="card_ontime_bg">#D3F2DE</color>
+    <color name="card_ontime_on">#1B6B3A</color>
+
+    <color name="card_early_bg">#D7E3FC</color>
+    <color name="card_early_on">#21408C</color>
+
+    <color name="card_pending_bg">#EAE6F5</color>
+    <color name="card_pending_on">#4A4566</color>
+
+    <!-- Stati semantici puntuali (chip, dot timeline) -->
+    <color name="status_ontime">#2E9E5B</color>
+    <color name="status_late">#D9534F</color>
+    <color name="status_early">#4768D9</color>
+    <color name="status_pending_grey">#9991B8</color>
 </resources>

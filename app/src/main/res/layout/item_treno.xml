@@ -1,83 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardTreno"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
     app:cardElevation="0dp"
     app:strokeWidth="0dp"
-    app:cardBackgroundColor="?attr/colorSurfaceVariant"
-    app:cardCornerRadius="24dp">
+    app:cardBackgroundColor="@color/card_pending_bg"
+    app:cardCornerRadius="28dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <View
-            android:id="@+id/statusStripe"
-            android:layout_width="6dp"
-            android:layout_height="match_parent"
-            android:background="?attr/colorPrimary" />
+        android:orientation="vertical"
+        android:padding="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="18dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:id="@+id/textNumeroTreno"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    android:textColor="?attr/colorOnSurface" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipStato"
-                    style="@style/Widget.Material3.Chip.Assist"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:focusable="false"
-                    android:textSize="13sp" />
-
-                <ImageButton
-                    android:id="@+id/btnRimuovi"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="4dp"
-                    android:src="@drawable/ic_close"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    app:tint="?attr/colorOnSurfaceVariant" />
-
-            </LinearLayout>
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
             <TextView
-                android:id="@+id/textTratta"
-                android:layout_width="match_parent"
+                android:id="@+id/textNumeroTreno"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                android:layout_marginTop="4dp" />
+                android:layout_weight="1"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-black"
+                android:textColor="@color/card_pending_on" />
 
             <TextView
-                android:id="@+id/textStato"
-                android:layout_width="match_parent"
+                android:id="@+id/textStatoCompatto"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="13sp"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                android:layout_marginTop="8dp" />
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/card_pending_on" />
+
+            <ImageButton
+                android:id="@+id/btnRimuovi"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="6dp"
+                android:src="@drawable/ic_close"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="@color/card_pending_on" />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/textTratta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/card_pending_on"
+            android:alpha="0.75"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/textStato"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="@color/card_pending_on"
+            android:alpha="0.75"
+            android:layout_marginTop="10dp" />
 
     </LinearLayout>
 

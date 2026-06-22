@@ -80,6 +80,11 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnTema.setOnClickListener { mostraSceltaTema() }
 
+        binding.navTratta.setOnClickListener {
+            startActivity(android.content.Intent(this, RicercaTrattaActivity::class.java))
+        }
+        binding.navTema.setOnClickListener { mostraSceltaTema() }
+
         binding.swipeRefresh.setOnRefreshListener {
             val richiesta = OneTimeWorkRequestBuilder<TrainCheckWorker>()
                 .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())

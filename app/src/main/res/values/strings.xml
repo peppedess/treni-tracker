@@ -15,4 +15,5 @@
     <string name="cerca_per_tratta_btn">Cerca per tratta</string>
     <string name="cambia_tema">Cambia tema</string>
     <string name="condividi">Condividi</string>
+    <string name="nav_home">Home</string>
 </resources>
