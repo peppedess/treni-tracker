@@ -8,11 +8,14 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.treni.tracker.data.AppDatabase
@@ -41,6 +44,7 @@ class MainActivity : AppCompatActivity() {
     ) { _ -> }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -56,10 +60,20 @@ class MainActivity : AppCompatActivity() {
         val dao = AppDatabase.getInstance(this).trenoDao()
         dao.osservaTreniAttivi().observe(this) { treni ->
             adapter.aggiorna(treni)
-            binding.textVuoto.visibility = if (treni.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
+            binding.emptyState.visibility = if (treni.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
         }
 
         binding.btnCerca.setOnClickListener { cercaTreno() }
+
+        binding.swipeRefresh.setOnRefreshListener {
+            val richiesta = OneTimeWorkRequestBuilder<TrainCheckWorker>()
+                .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+                .build()
+            WorkManager.getInstance(this).enqueue(richiesta)
+            // Lo spinner si ferma da solo dopo un tempo breve: il refresh reale avviene
+            // in background e la UI si aggiorna automaticamente via LiveData
+            binding.swipeRefresh.postDelayed({ binding.swipeRefresh.isRefreshing = false }, 1500)
+        }
     }
 
     private fun chiediPermessoNotifiche() {
@@ -156,6 +170,15 @@ class MainActivity : AppCompatActivity() {
                     withContext(Dispatchers.IO) {
                         AppDatabase.getInstance(this@MainActivity).trenoDao().inserisci(treno)
                     }
+
+                    // Controllo immediato, senza aspettare il primo ciclo periodico (fino a 15 min)
+                    val vincoliRete = Constraints.Builder()
+                        .setRequiredNetworkType(NetworkType.CONNECTED)
+                        .build()
+                    val richiestaImmediata = OneTimeWorkRequestBuilder<TrainCheckWorker>()
+                        .setConstraints(vincoliRete)
+                        .build()
+                    WorkManager.getInstance(this@MainActivity).enqueue(richiestaImmediata)
 
                     binding.inputNumeroTreno.text?.clear()
                 }

@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.chip.Chip
 import com.treni.tracker.R
 import com.treni.tracker.data.TrenoMonitorato
 
@@ -32,21 +33,53 @@ class TreniAdapter(
         private val numero: android.widget.TextView = itemView.findViewById(R.id.textNumeroTreno)
         private val tratta: android.widget.TextView = itemView.findViewById(R.id.textTratta)
         private val stato: android.widget.TextView = itemView.findViewById(R.id.textStato)
+        private val chipStato: Chip = itemView.findViewById(R.id.chipStato)
+        private val statusStripe: View = itemView.findViewById(R.id.statusStripe)
         private val btnRimuovi: android.widget.ImageButton = itemView.findViewById(R.id.btnRimuovi)
 
         fun bind(treno: TrenoMonitorato) {
+            val context = itemView.context
             numero.text = treno.numeroTreno
             tratta.text = "${treno.stazionePartenzaNome} → ${treno.stazioneDestinazioneNome ?: "?"}"
 
             val ritardo = treno.ultimoRitardo
-            stato.text = when {
-                ritardo == null -> "In attesa di aggiornamento…"
-                ritardo > 0 -> "In ritardo di $ritardo min" + (treno.ultimaStazioneNotificata?.let { " · $it" } ?: "")
-                ritardo < 0 -> "In anticipo di ${kotlin.math.abs(ritardo)} min" + (treno.ultimaStazioneNotificata?.let { " · $it" } ?: "")
-                else -> "In orario" + (treno.ultimaStazioneNotificata?.let { " · $it" } ?: "")
+            val coloreStato: Int
+            val testoChip: String
+
+            when {
+                ritardo == null -> {
+                    testoChip = "In attesa"
+                    coloreStato = getColorAttr(context, com.google.android.material.R.attr.colorOutline)
+                }
+                ritardo > 0 -> {
+                    testoChip = "+$ritardo min"
+                    coloreStato = androidx.core.content.ContextCompat.getColor(context, R.color.status_late)
+                }
+                ritardo < 0 -> {
+                    testoChip = "${ritardo} min"
+                    coloreStato = androidx.core.content.ContextCompat.getColor(context, R.color.status_early)
+                }
+                else -> {
+                    testoChip = "In orario"
+                    coloreStato = androidx.core.content.ContextCompat.getColor(context, R.color.status_ontime)
+                }
             }
 
+            chipStato.text = testoChip
+            chipStato.chipBackgroundColor = android.content.res.ColorStateList.valueOf(coloreStato)
+            chipStato.setTextColor(androidx.core.content.ContextCompat.getColor(context, android.R.color.white))
+            statusStripe.setBackgroundColor(coloreStato)
+
+            stato.text = treno.ultimaStazioneNotificata?.let { "Ultima fermata rilevata: $it" }
+                ?: "In attesa del primo aggiornamento…"
+
             btnRimuovi.setOnClickListener { onRimuovi(treno) }
+        }
+
+        private fun getColorAttr(context: android.content.Context, attr: Int): Int {
+            val typedValue = android.util.TypedValue()
+            context.theme.resolveAttribute(attr, typedValue, true)
+            return typedValue.data
         }
     }
 }
